@@ -7,7 +7,7 @@ from django.db.models import QuerySet, Manager
 from telegram import Update
 from telegram.ext import CallbackContext
 
-from dtb.settings import DEBUG
+from core.settings import DEBUG
 from tgbot.handlers.utils.info import extract_user_data_from_update
 from utils.models import CreateUpdateTracker, nb, CreateTracker, GetOrNoneManager
 
@@ -22,7 +22,8 @@ class User(CreateUpdateTracker):
     username = models.CharField(max_length=32, **nb)
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256, **nb)
-    language_code = models.CharField(max_length=8, help_text="Telegram client's lang", **nb)
+    language_code = models.CharField(
+        max_length=8, help_text="Telegram client's lang", **nb)
     deep_link = models.CharField(max_length=64, **nb)
 
     is_blocked_bot = models.BooleanField(default=False)
@@ -39,13 +40,15 @@ class User(CreateUpdateTracker):
     def get_user_and_created(cls, update: Update, context: CallbackContext) -> Tuple[User, bool]:
         """ python-telegram-bot's Update, Context --> User instance """
         data = extract_user_data_from_update(update)
-        u, created = cls.objects.update_or_create(user_id=data["user_id"], defaults=data)
+        u, created = cls.objects.update_or_create(
+            user_id=data["user_id"], defaults=data)
 
         if created:
             # Save deep_link to User model
             if context is not None and context.args is not None and len(context.args) > 0:
                 payload = context.args[0]
-                if str(payload).strip() != str(data["user_id"]).strip():  # you can't invite yourself
+                # you can't invite yourself
+                if str(payload).strip() != str(data["user_id"]).strip():
                     u.deep_link = payload
                     u.save()
 
@@ -90,6 +93,8 @@ class Location(CreateTracker):
         # Parse location with arcgis
         from arcgis.tasks import save_data_from_arcgis
         if DEBUG:
-            save_data_from_arcgis(latitude=self.latitude, longitude=self.longitude, location_id=self.pk)
+            save_data_from_arcgis(latitude=self.latitude,
+                                  longitude=self.longitude, location_id=self.pk)
         else:
-            save_data_from_arcgis.delay(latitude=self.latitude, longitude=self.longitude, location_id=self.pk)
+            save_data_from_arcgis.delay(
+                latitude=self.latitude, longitude=self.longitude, location_id=self.pk)

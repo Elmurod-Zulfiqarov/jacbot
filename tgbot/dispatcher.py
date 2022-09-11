@@ -13,8 +13,8 @@ from telegram.ext import (
     CallbackQueryHandler,
 )
 
-from dtb.celery import app  # event processing in async mode
-from dtb.settings import TELEGRAM_TOKEN, DEBUG
+from core.celery import app  # event processing in async mode
+from core.settings import TELEGRAM_TOKEN, DEBUG
 
 from tgbot.handlers.utils import files, error
 from tgbot.handlers.admin import handlers as admin_handlers
@@ -39,18 +39,23 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler('export_users', admin_handlers.export_users))
 
     # location
-    dp.add_handler(CommandHandler("ask_location", location_handlers.ask_for_location))
-    dp.add_handler(MessageHandler(Filters.location, location_handlers.location_handler))
+    dp.add_handler(CommandHandler(
+        "ask_location", location_handlers.ask_for_location))
+    dp.add_handler(MessageHandler(Filters.location,
+                   location_handlers.location_handler))
 
     # secret level
-    dp.add_handler(CallbackQueryHandler(onboarding_handlers.secret_level, pattern=f"^{SECRET_LEVEL_BUTTON}"))
+    dp.add_handler(CallbackQueryHandler(
+        onboarding_handlers.secret_level, pattern=f"^{SECRET_LEVEL_BUTTON}"))
 
     # broadcast message
     dp.add_handler(
-        MessageHandler(Filters.regex(rf'^{broadcast_command}(/s)?.*'), broadcast_handlers.broadcast_command_with_message)
+        MessageHandler(Filters.regex(
+            rf'^{broadcast_command}(/s)?.*'), broadcast_handlers.broadcast_command_with_message)
     )
     dp.add_handler(
-        CallbackQueryHandler(broadcast_handlers.broadcast_decision_handler, pattern=f"^{CONFIRM_DECLINE_BROADCAST}")
+        CallbackQueryHandler(broadcast_handlers.broadcast_decision_handler,
+                             pattern=f"^{CONFIRM_DECLINE_BROADCAST}")
     )
 
     # files
@@ -161,4 +166,5 @@ def set_up_commands(bot_instance: Bot) -> None:
 set_up_commands(bot)
 
 n_workers = 0 if DEBUG else 4
-dispatcher = setup_dispatcher(Dispatcher(bot, update_queue=None, workers=n_workers, use_context=True))
+dispatcher = setup_dispatcher(Dispatcher(
+    bot, update_queue=None, workers=n_workers, use_context=True))
