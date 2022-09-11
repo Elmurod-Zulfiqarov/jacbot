@@ -1,5 +1,5 @@
 """
-    Telegram event handlers
+	Telegram event handlers
 """
 import sys
 import logging
@@ -42,7 +42,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler(
         "ask_location", location_handlers.ask_for_location))
     dp.add_handler(MessageHandler(Filters.location,
-                   location_handlers.location_handler))
+                                  location_handlers.location_handler))
 
     # secret level
     dp.add_handler(CallbackQueryHandler(

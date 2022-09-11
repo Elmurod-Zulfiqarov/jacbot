@@ -63,6 +63,9 @@ db.sqlite3-journal
 # dtb/static
 core/static
 
+media
+staticfiles
+
 # Flask stuff:
 instance/
 .webassets-cache
