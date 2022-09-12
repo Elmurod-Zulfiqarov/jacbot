@@ -18,32 +18,21 @@ class Agency(CreateUpdateTracker):
 
 
 class Market(CreateUpdateTracker):
-	image_market = models.ImageField(upload_to="media/", verbose_name="Do'kon fotosurati")
-	company_name = models.CharField(max_length=128, verbose_name="Firma nomi")
-	company_document = models.ImageField(upload_to="media/", verbose_name="Firma hujjati: (Guvohnoma, Patent)") 
-	full_name = models.CharField(max_length=128, verbose_name="To'liq ismi: (F.I.SH)")
+	name = models.CharField(max_length=128, verbose_name="Firma nomi")
+	document = models.ImageField(upload_to="media/", verbose_name="Firma hujjati: (Guvohnoma, Patent)") 
+	photo = models.ImageField(upload_to="media/", verbose_name="Do'kon fotosurati")
+	owner_full_name = models.CharField(max_length=128, verbose_name="To'liq ismi: (F.I.SH)")
 	phone = models.CharField(max_length=17, verbose_name="Telefon raqami: (+998 XX XXX XX XX)")
 	address = models.CharField(max_length=256, verbose_name="Manzili: (shahar/tuman, ko'cha, uy)")
 
 	def __str__(self) -> str:
-		return self.company_name
+		return self.name
 
 	class Meta:
 		verbose_name = "Do'kon"
 		verbose_name_plural = "Do'konlar"
 
 
-class Product(CreateUpdateTracker):
-	title = models.CharField(max_length=128, verbose_name="Nomi")
-	price = models.CharField(max_length=128, verbose_name="narxi")
-	amonut = models.CharField(max_length=128, verbose_name="miqdori")
-
-	def __str__(self) -> str:
-		return self.title
-
-	class Meta:
-		verbose_name = "mahsulot"
-		verbose_name_plural = "mahsulotlar"
 
 
 class ProductGiven(CreateUpdateTracker):
