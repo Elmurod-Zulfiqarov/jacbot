@@ -1,13 +1,21 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import ReplyKeyboardMarkup
 
-from tgbot.handlers.onboarding.manage_data import SECRET_LEVEL_BUTTON
-from tgbot.handlers.onboarding.static_text import github_button_text, secret_level_button_text
+from tgbot.handlers.onboarding.manage_data import REGISTER_LEVEL_BUTTON
+from tgbot.handlers.onboarding.static_text import register_button_text
 
 
-def make_keyboard_for_start_command() -> InlineKeyboardMarkup:
-    buttons = [[
-        InlineKeyboardButton(github_button_text, url="https://github.com/ohld/django-telegram-bot"),
-        InlineKeyboardButton(secret_level_button_text, callback_data=f'{SECRET_LEVEL_BUTTON}')
-    ]]
+def make_keyboard_for_start_command() -> ReplyKeyboardMarkup:
+    buttons = [
+            [register_button_text]
+        ]
 
-    return InlineKeyboardMarkup(buttons)
+    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+
+def market_keyboard_list() -> ReplyKeyboardMarkup:
+    test_data = ["Market 1", "Market 2", "Market 3", "Market 4", "Market 5","Market 6"]
+    buttons = []
+    for i in test_data:
+            buttons.append([i])
+    print(buttons)
+    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+    

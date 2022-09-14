@@ -1,7 +1,18 @@
-start_created = "Sup, {first_name}!"
-start_not_created = "Welcome back, {first_name}!"
-unlock_secret_room = "Congratulations! You've opened a secret room👁‍🗨. There is some information for you:\n" \
-           "<b>Users</b>: {user_count}\n" \
-           "<b>24h active</b>: {active_24}"
-github_button_text = "GitHub"
-secret_level_button_text = "Secret level🗝"
+start_created = "Xush kelibsiz, {first_name}!"
+start_not_created = "Xush ko'rdik, {first_name}!"
+
+register_button_text = "Ro'yxatdan o'tish"
+
+register_name = "\nRo'yxatdan o'tish 5 bosqichdan iborat. Ma'lumotlarni kiritishda e'tiborli bo'ling! \n" \
+				"1) To'liq ismingizni kiriting(F.I.SH): Familiya Ism Otasining ismi \n" \
+		   		"Misol: Anvar Sobirov Akbar o'g'li"
+register_address = "2) Yashash manzilingizni kiriting \n" \
+		   		"Shahar, tuman, ko'cha, uy"
+register_phone = "Telefon raqamingizni kiriting \n" \
+				"+998 XX XXX XX XX"
+register_image = "Rasmingizni yuboring(Sifatli rasm jo'nating) \n" \
+				
+register_passport = "Passportingiz rasmini yuboring \n" \
+				"(O'zigizga tegishli passportni sifatli rasmga olib jo'nating)"
+
+redirect_market = "Do'konlar"

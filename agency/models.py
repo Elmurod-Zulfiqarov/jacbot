@@ -1,5 +1,6 @@
 from django.db import models
 from utils.models import CreateUpdateTracker
+from product.models import Product
 
 
 class Agency(CreateUpdateTracker):
@@ -24,6 +25,8 @@ class Market(CreateUpdateTracker):
 	owner_full_name = models.CharField(max_length=128, verbose_name="To'liq ismi: (F.I.SH)")
 	phone = models.CharField(max_length=17, verbose_name="Telefon raqami: (+998 XX XXX XX XX)")
 	address = models.CharField(max_length=256, verbose_name="Manzili: (shahar/tuman, ko'cha, uy)")
+	location = models.JSONField(verbose_name="Location Jo'naitish")
+
 
 	def __str__(self) -> str:
 		return self.name

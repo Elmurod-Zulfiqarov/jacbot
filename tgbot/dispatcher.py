@@ -9,8 +9,8 @@ import telegram.error
 from telegram import Bot, Update, BotCommand
 from telegram.ext import (
     Updater, Dispatcher, Filters,
-    CommandHandler, MessageHandler,
-    CallbackQueryHandler,
+    CommandHandler, MessageHandler, 
+    CallbackQueryHandler, ConversationHandler,
 )
 
 from core.celery import app  # event processing in async mode
@@ -20,18 +20,60 @@ from tgbot.handlers.utils import files, error
 from tgbot.handlers.admin import handlers as admin_handlers
 from tgbot.handlers.location import handlers as location_handlers
 from tgbot.handlers.onboarding import handlers as onboarding_handlers
+from tgbot.handlers.onboarding import static_text as onboarding_command
 from tgbot.handlers.broadcast_message import handlers as broadcast_handlers
-from tgbot.handlers.onboarding.manage_data import SECRET_LEVEL_BUTTON
+from tgbot.handlers.onboarding.manage_data import REGISTER_LEVEL_BUTTON
 from tgbot.handlers.broadcast_message.manage_data import CONFIRM_DECLINE_BROADCAST
 from tgbot.handlers.broadcast_message.static_text import broadcast_command
+
+
+ENTER_NAME, ENTER_ADDRESS, ENTER_PHONE, ENTER_IMAGE, ENTER_PASSPORT, MARKET_MENU = range(6)
 
 
 def setup_dispatcher(dp):
     """
     Adding handlers for events from Telegram
     """
+    
+    register_handler = ConversationHandler(
+        entry_points=[
+            MessageHandler(Filters.text(onboarding_command.register_button_text), onboarding_handlers.register_level),
+        ],
+        states={
+            ENTER_NAME: [
+                MessageHandler(Filters.text & ~Filters.command,
+                               onboarding_handlers.get_full_name)
+            ],
+            ENTER_ADDRESS: [
+                MessageHandler(Filters.text & ~Filters.command,
+                               onboarding_handlers.get_address)
+            ],
+            ENTER_PHONE: [
+                MessageHandler(Filters.text & ~Filters.command,
+                               onboarding_handlers.get_phone)                            
+            ],
+            ENTER_IMAGE: [
+               MessageHandler(Filters.text & ~Filters.command,
+                               onboarding_handlers.get_image)                         
+            ],
+            ENTER_PASSPORT: [
+               MessageHandler(Filters.text & ~Filters.command,
+                               onboarding_handlers.get_passport)                          
+            ],
+            MARKET_MENU: [
+            MessageHandler(Filters.text(onboarding_command.redirect_market), onboarding_handlers.get_market),
+            ]
+        },
+
+        fallbacks=[],
+        allow_reentry=True
+    )
+
     # onboarding
     dp.add_handler(CommandHandler("start", onboarding_handlers.command_start))
+
+    # register, onboarding
+    dp.add_handler(register_handler)
 
     # admin commands
     dp.add_handler(CommandHandler("admin", admin_handlers.admin))
@@ -43,10 +85,6 @@ def setup_dispatcher(dp):
         "ask_location", location_handlers.ask_for_location))
     dp.add_handler(MessageHandler(Filters.location,
                                   location_handlers.location_handler))
-
-    # secret level
-    dp.add_handler(CallbackQueryHandler(
-        onboarding_handlers.secret_level, pattern=f"^{SECRET_LEVEL_BUTTON}"))
 
     # broadcast message
     dp.add_handler(
