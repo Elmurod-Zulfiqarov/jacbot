@@ -1,4 +1,6 @@
 import datetime
+from fileinput import filename
+from os import curdir
 from tkinter import Entry
 
 from django.utils import timezone
@@ -8,7 +10,8 @@ from telegram.ext import CallbackContext, MessageHandler, ConversationHandler
 from tgbot.handlers.onboarding import static_text
 from tgbot.handlers.utils.info import extract_user_data_from_update
 from tgbot.models import User
-from tgbot.handlers.onboarding.keyboards import make_keyboard_for_start_command, market_keyboard_list
+from tgbot.handlers.onboarding.keyboards import make_keyboard_for_start_command, \
+							 market_keyboard_list, get_markets
 
 from agency.models import Agency
 
@@ -37,6 +40,7 @@ image_passport = None
 
 
 def get_full_name(update: Update, context: CallbackContext):
+	global full_name
 	full_name = update.message.text
 	text = static_text.register_address
 	update.message.reply_text(text)
@@ -44,6 +48,7 @@ def get_full_name(update: Update, context: CallbackContext):
 
 
 def get_address(update: Update, context: CallbackContext):
+	global address
 	address = update.message.text
 	text = static_text.register_phone
 	update.message.reply_text(text)
@@ -51,6 +56,7 @@ def get_address(update: Update, context: CallbackContext):
 
 
 def get_phone(update: Update, context: CallbackContext):
+	global phone
 	phone = update.message.text
 	text = static_text.register_image
 	update.message.reply_text(text)
@@ -58,24 +64,28 @@ def get_phone(update: Update, context: CallbackContext):
 
 
 def get_image(update: Update, context: CallbackContext):
-	# image = context.bot.get_file(update.message.document.file_id)
-	# print(image)
-	image = update.message.text
+	global image
+	image = context.bot.getFile(update.message.photo[-1].file_id)
+	image = image.download()
 	text = static_text.register_passport
 	update.message.reply_text(text)
 	return ENTER_PASSPORT
 
 
 def get_passport(update: Update, context: CallbackContext):
-	# image_passport = context.bot.get_file(update.message.document.file_id)
-	# print(image_passport)
-	# Agency.objects.create(full_name=full_name, address=address, phone=phone, 
-	# 					image=image, image_passport=image_passport)
-	passport = update.message.text
-	text = static_text.redirect_market
-	update.message.reply_text(text, reply_markup=market_keyboard_list())
+	global passport 
+	passport = context.bot.getFile(update.message.photo[-1].file_id)
+	passport = passport.download()
+	print(f"{full_name}\n {address}\n {phone}\n {image}\n {passport}", )
+	Agency.objects.create(full_name=full_name, address=address, phone=phone, 
+						image=image, image_passport=passport)
+	
+	text = static_text.register_finished
+	update.message.reply_text(text, reply_markup=get_markets())
 	return MARKET_MENU
 
 
 def get_market(update: Update, context: CallbackContext):
-	update.message.reply_text(text="Bizning do'konlar")
+	update.message.reply_text(text="Bizning do'konlar", reply_markup=market_keyboard_list())
+	return ConversationHandler.END
+	

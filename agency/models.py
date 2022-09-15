@@ -8,7 +8,9 @@ class Agency(CreateUpdateTracker):
 	address = models.CharField(max_length=256, verbose_name="Manzili: (shahar/tuman, ko'cha, uy)")
 	phone = models.CharField(max_length=17, verbose_name="Telefon raqami: (+998 XX XXX XX XX)")
 	image = models.ImageField(upload_to="media/", verbose_name="Fotosurat")
-	image_passport = models.ImageField(upload_to="media/", verbose_name="Passportingiz fotosurati")
+	image_passport = models.ImageField(upload_to="media/", verbose_name="Passport fotosurati")
+
+	is_view = models.BooleanField(default=False, verbose_name="Agent ma'lumotlarini tasdiqlash")
 
 	def __str__(self) -> str:
 		return self.full_name

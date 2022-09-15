@@ -53,15 +53,14 @@ def setup_dispatcher(dp):
                                onboarding_handlers.get_phone)                            
             ],
             ENTER_IMAGE: [
-               MessageHandler(Filters.text & ~Filters.command,
-                               onboarding_handlers.get_image)                         
+               MessageHandler(Filters.photo, onboarding_handlers.get_image)                         
             ],
             ENTER_PASSPORT: [
-               MessageHandler(Filters.text & ~Filters.command,
-                               onboarding_handlers.get_passport)                          
+               MessageHandler(Filters.photo, onboarding_handlers.get_passport)                           
             ],
             MARKET_MENU: [
-            MessageHandler(Filters.text(onboarding_command.redirect_market), onboarding_handlers.get_market),
+            MessageHandler(Filters.text(onboarding_command.get_market_text),
+                             onboarding_handlers.get_market)
             ]
         },
 

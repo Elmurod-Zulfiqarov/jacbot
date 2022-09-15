@@ -15,4 +15,9 @@ register_image = "Rasmingizni yuboring(Sifatli rasm jo'nating) \n" \
 register_passport = "Passportingiz rasmini yuboring \n" \
 				"(O'zigizga tegishli passportni sifatli rasmga olib jo'nating)"
 
-redirect_market = "Do'konlar"
+register_finished = "Tabriklaymiz siz ro'yxatdan o'tib bo'ldingiz,\n" \
+					"Admin tez orada ma'lumotlaringizni ko'rib chiqib, siz bilan bog'lanadi."
+
+get_market_text = "Biznig Do'konlar"
+
+redirect_market = "izning do'konlar do'konlar"
