@@ -41,8 +41,8 @@ def setup_dispatcher(dp):
         ],
         states={
             ENTER_NAME: [
-                MessageHandler(Filters.text & ~Filters.command,
-                               onboarding_handlers.get_full_name)
+                MessageHandler(Filters.text & ~Filters.command, 
+                                onboarding_handlers.get_full_name),
             ],
             ENTER_ADDRESS: [
                 MessageHandler(Filters.text & ~Filters.command,
