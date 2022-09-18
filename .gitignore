@@ -64,6 +64,7 @@ db.sqlite3-journal
 core/static
 
 media
+mediafiles
 staticfiles
 
 # Flask stuff:

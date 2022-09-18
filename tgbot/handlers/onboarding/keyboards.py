@@ -1,7 +1,7 @@
 from telegram import ReplyKeyboardMarkup
 
 from tgbot.handlers.onboarding.manage_data import REGISTER_LEVEL_BUTTON
-from tgbot.handlers.onboarding.static_text import register_button_text, get_market_text
+from tgbot.handlers.onboarding.static_text import register_button_text, redirect_market, add_market
 
 
 def make_keyboard_for_start_command() -> ReplyKeyboardMarkup:
@@ -13,10 +13,9 @@ def make_keyboard_for_start_command() -> ReplyKeyboardMarkup:
 
 def get_markets() -> ReplyKeyboardMarkup:
     buttons = [
-            [get_market_text]
+            [redirect_market]
         ]
     return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
-
 
 
 def market_keyboard_list() -> ReplyKeyboardMarkup:
@@ -24,5 +23,7 @@ def market_keyboard_list() -> ReplyKeyboardMarkup:
     buttons = []
     for i in test_data:
             buttons.append([i])
+
+    buttons.append([add_market])
     return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     

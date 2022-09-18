@@ -21,13 +21,16 @@ from tgbot.handlers.admin import handlers as admin_handlers
 from tgbot.handlers.location import handlers as location_handlers
 from tgbot.handlers.onboarding import handlers as onboarding_handlers
 from tgbot.handlers.onboarding import static_text as onboarding_command
+from tgbot.handlers.market_register import handlers as marker_handlers
+
 from tgbot.handlers.broadcast_message import handlers as broadcast_handlers
-from tgbot.handlers.onboarding.manage_data import REGISTER_LEVEL_BUTTON
 from tgbot.handlers.broadcast_message.manage_data import CONFIRM_DECLINE_BROADCAST
 from tgbot.handlers.broadcast_message.static_text import broadcast_command
 
 
 ENTER_NAME, ENTER_ADDRESS, ENTER_PHONE, ENTER_IMAGE, ENTER_PASSPORT, MARKET_MENU = range(6)
+
+MARKET_NAME, MARKET_DOCUMENT, MARKET_PHOTO, MARKET_OWNER_NAME, MARKET_OWNER_PHONE, MARKET_ADDRESS, MARKET_LOCATION = range(7)
 
 
 def setup_dispatcher(dp):
@@ -37,7 +40,8 @@ def setup_dispatcher(dp):
     
     register_handler = ConversationHandler(
         entry_points=[
-            MessageHandler(Filters.text(onboarding_command.register_button_text), onboarding_handlers.register_level),
+            MessageHandler(Filters.text(onboarding_command.register_button_text),
+                                onboarding_handlers.register_level),
         ],
         states={
             ENTER_NAME: [
@@ -59,8 +63,42 @@ def setup_dispatcher(dp):
                MessageHandler(Filters.photo, onboarding_handlers.get_passport)                           
             ],
             MARKET_MENU: [
-            MessageHandler(Filters.text(onboarding_command.get_market_text),
-                             onboarding_handlers.get_market)
+                MessageHandler(Filters.text(onboarding_command.redirect_market),
+                                onboarding_handlers.get_market)
+            ]
+        },
+
+        fallbacks=[],
+        allow_reentry=True
+    )
+
+    market_handler = ConversationHandler(
+        entry_points=[
+            MessageHandler(Filters.text(onboarding_command.add_market),
+                                marker_handlers.add_new_market),
+        ],
+        states={
+            MARKET_NAME: [
+                MessageHandler(Filters.text & ~Filters.command, 
+                                marker_handlers.get_market_name),
+            ],
+            MARKET_DOCUMENT: [
+                MessageHandler(Filters.photo, marker_handlers.get_market_document)
+            ],
+            MARKET_PHOTO: [
+                MessageHandler(Filters.photo, marker_handlers.get_market_photo)                            
+            ],
+            MARKET_OWNER_NAME: [
+               MessageHandler(Filters.text & ~Filters.command, marker_handlers.get_owner_name)                         
+            ],
+            MARKET_OWNER_PHONE: [
+               MessageHandler(Filters.text & ~Filters.command, marker_handlers.get_owner_phone)                           
+            ],
+            MARKET_ADDRESS: [
+                MessageHandler(Filters.text & ~Filters.command, marker_handlers.get_market_address)
+            ],
+            MARKET_LOCATION: [
+                MessageHandler(Filters.text & ~Filters.command, marker_handlers.get_market_location)
             ]
         },
 
@@ -71,8 +109,11 @@ def setup_dispatcher(dp):
     # onboarding
     dp.add_handler(CommandHandler("start", onboarding_handlers.command_start))
 
-    # register, onboarding
+    # register handler in onboarding
     dp.add_handler(register_handler)
+
+    # market handler
+    dp.add_handler(market_handler)
 
     # admin commands
     dp.add_handler(CommandHandler("admin", admin_handlers.admin))

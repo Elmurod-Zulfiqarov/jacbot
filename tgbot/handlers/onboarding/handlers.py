@@ -25,7 +25,6 @@ def command_start(update: Update, context: CallbackContext) -> None:
 	update.message.reply_text(text=text, reply_markup=make_keyboard_for_start_command())
 
 def register_level(update: Update, context: CallbackContext) -> None:
-	user_id = extract_user_data_from_update(update)['user_id']
 	text = static_text.register_name
 	update.message.reply_text(text=text, reply_markup=ReplyKeyboardRemove())
 	return ENTER_NAME
@@ -78,27 +77,31 @@ def get_phone(update: Update, context: CallbackContext):
 		return ENTER_PHONE
 
 
-import os
-from django.conf import settings
-from django.http import HttpResponse, Http404
+# import os
+# from django.conf import settings
+# from django.http import HttpResponse, Http404
 
 
-def download_image(path):
-	file_path = os.path.join(settings.MEDIA_ROOT, path)
-	if os.path.exists(file_path):
-		with open(file_path, 'rb') as fh:
-			response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-			response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-			return response
-	raise Http404
+# def download_image(path):
+# 	file_path = os.path.join(settings.MEDIA_ROOT, path)
+# 	print(file_path)
+# 	print(os.path.exists(file_path))
+
+# 	if os.path.exists(file_path):
+# 		print(os.path.exists(file_path))
+# 		with open(file_path, 'rb') as fh:
+# 			response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+# 			response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+# 			return response
+# 	raise Http404
 
 
 def get_image(update: Update, context: CallbackContext):
 	global image
 	image = context.bot.getFile(update.message.photo[-1].file_id)
-	print(image)
-	image = download_image(image['file_path'])
-	print(image)	
+	# print(image)
+	# image = download_image(image['file_path'])
+	# print(image)	
 	text = static_text.register_passport
 	update.message.reply_text(text)
 	return ENTER_PASSPORT
@@ -107,12 +110,12 @@ def get_image(update: Update, context: CallbackContext):
 def get_passport(update: Update, context: CallbackContext):
 	global passport 
 	passport = context.bot.getFile(update.message.photo[-1].file_id)
-	print(passport)
-	passport = download_image(passport['file_path'])
-	print(passport)
-	print(f"{full_name}\n {address}\n {phone}\n {image}\n {passport}", )
-	Agency.objects.create(full_name=full_name, address=address, phone=phone, 
-						image=image, image_passport=passport)
+	# print(passport)
+	# passport = download_image(passport['file_path'])
+	# print(passport)
+	# print(f"{full_name}\n {address}\n {phone}\n {image}\n {passport}", )
+	# Agency.objects.create(full_name=full_name, address=address, phone=phone, 
+	# 					image=image, image_passport=passport)
 	
 	text = static_text.register_finished
 	update.message.reply_text(text, reply_markup=get_markets())
@@ -120,6 +123,6 @@ def get_passport(update: Update, context: CallbackContext):
 
 
 def get_market(update: Update, context: CallbackContext):
-	update.message.reply_text(text="Bizning do'konlar", reply_markup=market_keyboard_list())
+	update.message.reply_text(text=static_text.redirect_market, reply_markup=market_keyboard_list())
 	return ConversationHandler.END
 	
