@@ -1,5 +1,6 @@
 import datetime
-from turtle import update
+import requests
+import tempfile
 
 from django.utils import timezone
 from telegram import ParseMode, Update
@@ -7,12 +8,34 @@ from telegram.ext import CallbackContext, MessageHandler, ConversationHandler
 from telegram.replykeyboardremove import ReplyKeyboardRemove
 
 from tgbot.handlers.market_register import static_text
-from tgbot.models import User
+from tgbot.models import Location, User
 
 from agency.models import Market
 from django.conf import settings
 
 MARKET_NAME, MARKET_DOCUMENT, MARKET_PHOTO, MARKET_OWNER_NAME, MARKET_OWNER_PHONE, MARKET_ADDRESS, MARKET_LOCATION = range(7)
+
+def download_image(image_url):
+	# Stream the image from the url
+	response = requests.get(image_url, stream=True)
+	
+	# Get the filename from the url, used for saving later
+	file_name = image_url.split('/')[-1]
+	
+	# Create a temporary file
+	lf = tempfile.NamedTemporaryFile()
+
+	# Read the streamed image in sections
+	for block in response.iter_content(1024 * 8):
+		
+		# If no more file then stop
+		if not block:
+			break
+
+		# Write image block to temporary file
+		lf.write(block)
+
+	return {"file_name": file_name, "lf": lf}
 
 
 def add_new_market(update: Update, context: CallbackContext):
@@ -40,28 +63,12 @@ def get_market_name(update: Update, context: CallbackContext):
 		update.message.reply_text(text="Ism uzunligi 3-128 belgidan iborat bo'lishi kerak. Qaytdan kiriting!")
 		return MARKET_NAME
 
-# import os
-# from django.conf import settings
-# from django.http import HttpResponse, Http404
-
-
-# def download_image(path):
-# 	file_path = os.path.join(settings.MEDIA_ROOT, path)
-# 	if os.path.exists(file_path):
-# 		with open(file_path, 'rb') as fh:
-# 			response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-# 			response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-# 			return response
-# 	raise Http404
-
 
 def get_market_document(update: Update, context: CallbackContext):
 	global document
 	text = static_text.market_image
 	document = context.bot.getFile(update.message.photo[-1].file_id)
-	# print(image)
-	# image = download_image(image['file_path'])
-	# print(image)	
+	document = download_image(document['file_path'])
 	update.message.reply_text(text)
 	return MARKET_PHOTO
 
@@ -69,9 +76,7 @@ def get_market_document(update: Update, context: CallbackContext):
 def get_market_photo(update: Update, context: CallbackContext):
 	global photo
 	photo = context.bot.getFile(update.message.photo[-1].file_id)
-	# print(image)
-	# image = download_image(image['file_path'])
-	# print(image)	
+	photo = download_image(photo['file_path'])
 	text = static_text.market_owner_name
 	update.message.reply_text(text)
 	return MARKET_OWNER_NAME
@@ -119,7 +124,21 @@ def get_market_address(update: Update, context: CallbackContext):
 	
 
 def get_market_location(update: Update, context: CallbackContext):
+	location = update.message.text
 	text = static_text.market_register_finished
+
+	print(f"{name}\n {document}\n {photo}\n {owner_full_name}\n {phone}\n {address}\n {location}", )
+
+	market = Market()
+	market.name = name
+	market.document.save(document["file_name"], document["lf"])
+	market.photo.save(photo["file_name"], photo["lf"])
+	market.owner_full_name = owner_full_name
+	market.phone = phone
+	market.address = address
+	market.location = location
+	market.save()
+
 	update.message.reply_text(text=text)
 
 	return ConversationHandler.END
