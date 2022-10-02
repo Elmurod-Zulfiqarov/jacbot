@@ -21,8 +21,9 @@ from tgbot.handlers.admin import handlers as admin_handlers
 from tgbot.handlers.location import handlers as location_handlers
 from tgbot.handlers.onboarding import handlers as onboarding_handlers
 from tgbot.handlers.onboarding import static_text as onboarding_command
-from tgbot.handlers.market_register import handlers as market_handlers
+from tgbot.handlers.market_register import handlers as market_register_handlers
 from tgbot.handlers.market_register import static_text as market_command
+from tgbot.handlers.market_product import handlers as market_product_handlers
 
 
 from tgbot.handlers.broadcast_message import handlers as broadcast_handlers
@@ -74,33 +75,33 @@ def setup_dispatcher(dp):
 		allow_reentry=True
 	)
 
-	market_handler = ConversationHandler(
+	market_register_handler = ConversationHandler(
 		entry_points=[
 			MessageHandler(Filters.text(onboarding_command.add_market),
-								market_handlers.add_new_market),
+								market_register_handlers.add_new_market)
 		],
 		states={
 			MARKET_NAME: [
 				MessageHandler(Filters.text & ~Filters.command, 
-								market_handlers.get_market_name),
+								market_register_handlers.get_market_name),
 			],
 			MARKET_DOCUMENT: [
-				MessageHandler(Filters.photo, market_handlers.get_market_document)
+				MessageHandler(Filters.photo, market_register_handlers.get_market_document)
 			],
 			MARKET_PHOTO: [
-				MessageHandler(Filters.photo, market_handlers.get_market_photo)                            
+				MessageHandler(Filters.photo, market_register_handlers.get_market_photo)                            
 			],
 			MARKET_OWNER_NAME: [
-			   MessageHandler(Filters.text & ~Filters.command, market_handlers.get_owner_name)                         
+			   MessageHandler(Filters.text & ~Filters.command, market_register_handlers.get_owner_name)                         
 			],
 			MARKET_OWNER_PHONE: [
-			   MessageHandler(Filters.text & ~Filters.command, market_handlers.get_owner_phone)                           
+			   MessageHandler(Filters.text & ~Filters.command, market_register_handlers.get_owner_phone)                           
 			],
 			MARKET_ADDRESS: [
-				MessageHandler(Filters.text & ~Filters.command, market_handlers.get_market_address)
+				MessageHandler(Filters.text & ~Filters.command, market_register_handlers.get_market_address)
 			],
 			MARKET_LOCATION: [
-				MessageHandler(Filters.location, market_handlers.get_market_location)
+				MessageHandler(Filters.location, market_register_handlers.get_market_location)
 			]
 		},
 
@@ -115,7 +116,7 @@ def setup_dispatcher(dp):
 	dp.add_handler(register_handler)
 
 	# market handler
-	dp.add_handler(market_handler)
+	dp.add_handler(market_register_handler)
 
 	# admin commands
 	# dp.add_handler(CommandHandler("admin", admin_handlers.admin))
