@@ -46,7 +46,7 @@ def get_full_name(update: Update, context: CallbackContext):
 		update.message.reply_text(text)
 		return ENTER_ADDRESS
 	else: 
-		update.message.reply_text(text="Ism uzunligi 10-128 belgidan iborat bo'lishi kerak. Qaytdan kiriting!")
+		update.message.reply_text(text=static_text.check_name)
 		return ENTER_NAME
 
 
@@ -58,7 +58,7 @@ def get_address(update: Update, context: CallbackContext):
 		update.message.reply_text(text)
 		return ENTER_PHONE
 	else: 
-		update.message.reply_text(text="Manzil uzunligi 10-256 belgidan iborat bo'lishi kerak. Qaytdan kiriting!")
+		update.message.reply_text(text=static_text.check_address)
 		return ENTER_ADDRESS
 
 
@@ -72,10 +72,10 @@ def get_phone(update: Update, context: CallbackContext):
 			update.message.reply_text(text)
 			return ENTER_IMAGE
 		else:
-			update.message.reply_text(text="Iltimos, telefon raqamingizni na'munadagidek(+998 XX XXX XX XX) kiriting")
+			update.message.reply_text(text)
 			return ENTER_PHONE
 	else: 
-		update.message.reply_text(text="Iltimos, telefon raqamingizni na'munadagidek(+998 XX XXX XX XX) kiriting")
+		update.message.reply_text(text=static_text.check_phone)
 		return ENTER_PHONE
 
 def download_image(image_url):
@@ -114,7 +114,6 @@ def get_passport(update: Update, context: CallbackContext):
 	global passport 
 	passport = context.bot.getFile(update.message.photo[-1].file_id)
 	passport = download_image(passport['file_path'])
-	print(f"{full_name}\n {address}\n {phone}\n {image}\n {passport}", )
 
 	agency = Agency()
 	agency.full_name = full_name

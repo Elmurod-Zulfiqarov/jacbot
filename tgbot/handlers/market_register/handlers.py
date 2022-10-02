@@ -9,6 +9,7 @@ from telegram.replykeyboardremove import ReplyKeyboardRemove
 
 from tgbot.handlers.market_register import static_text
 from tgbot.models import Location, User
+from tgbot.handlers.market_register.keyboards import location_keyboard
 
 from agency.models import Market
 from django.conf import settings
@@ -60,7 +61,7 @@ def get_market_name(update: Update, context: CallbackContext):
 		update.message.reply_text(text)
 		return MARKET_DOCUMENT
 	else: 
-		update.message.reply_text(text="Ism uzunligi 3-128 belgidan iborat bo'lishi kerak. Qaytdan kiriting!")
+		update.message.reply_text(text=static_text.check_name)
 		return MARKET_NAME
 
 
@@ -90,7 +91,7 @@ def get_owner_name(update: Update, context: CallbackContext):
 		update.message.reply_text(text)
 		return MARKET_OWNER_PHONE
 	else: 
-		update.message.reply_text(text="Ism uzunligi 10-128 belgidan iborat bo'lishi kerak. Qaytdan kiriting!")
+		update.message.reply_text(text=static_text.check_name)
 		return MARKET_OWNER_NAME
 
 
@@ -104,10 +105,10 @@ def get_owner_phone(update: Update, context: CallbackContext):
 			update.message.reply_text(text)
 			return MARKET_ADDRESS
 		else:
-			update.message.reply_text(text="Iltimos, telefon raqamingizni na'munadagidek(+998 XX XXX XX XX) kiriting")
+			update.message.reply_text(text=static_text.check_phone)
 			return MARKET_OWNER_PHONE
 	else: 
-		update.message.reply_text(text="Iltimos, telefon raqamingizni na'munadagidek(+998 XX XXX XX XX) kiriting")
+		update.message.reply_text(text=static_text.check_phone)
 		return MARKET_OWNER_PHONE
 
 
@@ -116,29 +117,26 @@ def get_market_address(update: Update, context: CallbackContext):
 	text = static_text.market_location
 	if 10 <= len(update.message.text) <= 256:
 		address = update.message.text
-		update.message.reply_text(text)
+		update.message.reply_text(text, reply_markup=location_keyboard())
 		return MARKET_LOCATION
 	else: 
-		update.message.reply_text(text="Manzil uzunligi 10-256 belgidan iborat bo'lishi kerak. Qaytdan kiriting!")
+		update.message.reply_text(text=static_text.check_address)
 		return MARKET_ADDRESS
 	
 
 def get_market_location(update: Update, context: CallbackContext):
-	location = update.message.text
+	location = update.message.location.to_dict()
 	text = static_text.market_register_finished
-
-	print(f"{name}\n {document}\n {photo}\n {owner_full_name}\n {phone}\n {address}\n {location}", )
-
+	
 	market = Market()
 	market.name = name
-	market.document.save(document["file_name"], document["lf"])
-	market.photo.save(photo["file_name"], photo["lf"])
 	market.owner_full_name = owner_full_name
 	market.phone = phone
 	market.address = address
 	market.location = location
-	market.save()
+	market.document.save(document["file_name"], document["lf"])
+	market.photo.save(photo["file_name"], photo["lf"])
 
-	update.message.reply_text(text=text)
+	update.message.reply_text(text=text, reply_markup=ReplyKeyboardRemove())
 
 	return ConversationHandler.END

@@ -1,3 +1,7 @@
+check_phone = "Iltimos, telefon raqamingizni na'munadagidek(+998 XX XXX XX XX) kiriting"
+check_name = "Ism uzunligi 3-128 belgidan iborat bo'lishi kerak. Qaytdan kiriting!"
+check_address = "Manzil uzunligi 10-256 belgidan iborat bo'lishi kerak. Qaytdan kiriting!"
+
 market_name = "\n Do'kon qo'shish 7 bosqichdan iborat. Ma'lumotlarni kiritishda e'tiborli bo'ling! \n" \
 				"1) Do'kon  nomini kiriting:"
 

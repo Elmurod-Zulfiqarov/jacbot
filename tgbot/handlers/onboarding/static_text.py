@@ -1,6 +1,10 @@
 start_created = "Xush kelibsiz, {first_name}!"
 start_not_created = "Xush ko'rdik, {first_name}!"
 
+check_phone = "Iltimos, telefon raqamingizni na'munadagidek(+998 XX XXX XX XX) kiriting"
+check_name = "Ism uzunligi 10-128 belgidan iborat bo'lishi kerak. Qaytdan kiriting!"
+check_address = "Manzil uzunligi 10-256 belgidan iborat bo'lishi kerak. Qaytdan kiriting!"
+
 register_button_text = "Ro'yxatdan o'tish"
 
 register_name = "\nRo'yxatdan o'tish 5 bosqichdan iborat. Ma'lumotlarni kiritishda e'tiborli bo'ling! \n" \
