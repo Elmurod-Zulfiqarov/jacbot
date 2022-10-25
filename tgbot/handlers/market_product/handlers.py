@@ -18,5 +18,7 @@ def get_market_info(update: Update, context: CallbackContext):
 			update.message.reply_text(text, reply_markup=market_info_btn())
 			break
 	else:
-		print("Bunday do'kon mavjud emas!")
-	print("Tugadi!")
+		text = "Iltimos botdan to'g'ri  foydalaning, Bot bo'yicha batafsil /help"
+		update.message.reply_text(text)
+
+

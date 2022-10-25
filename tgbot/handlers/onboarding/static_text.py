@@ -1,6 +1,9 @@
 start_created = "Xush kelibsiz, {first_name}!"
 start_not_created = "Xush ko'rdik, {first_name}!"
-
+help_text = "Jacbot\n" \
+			"/start tugmasini bosib agent bo'lib ro'yhatdan o'ting, biz siz bilan bog'lanamiz\n" \
+			"Admin tasdiqlagandan keyin siz do'kon qo'shish va do'konlar haqida ma'lumotlar bilan ishlay olasiz"
+	
 check_phone = "Iltimos, telefon raqamingizni na'munadagidek(+998 XX XXX XX XX) kiriting"
 check_name = "Ism uzunligi 10-128 belgidan iborat bo'lishi kerak. Qaytdan kiriting!"
 check_address = "Manzil uzunligi 10-256 belgidan iborat bo'lishi kerak. Qaytdan kiriting!"

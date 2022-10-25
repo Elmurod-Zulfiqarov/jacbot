@@ -22,8 +22,9 @@ from tgbot.handlers.location import handlers as location_handlers
 from tgbot.handlers.onboarding import handlers as onboarding_handlers
 from tgbot.handlers.onboarding import static_text as onboarding_command
 from tgbot.handlers.market_register import handlers as market_register_handlers
-from tgbot.handlers.market_register import static_text as market_command
+from tgbot.handlers.market_register import static_text as market_register_command
 from tgbot.handlers.market_product import handlers as market_product_handlers
+from tgbot.handlers.market_product import static_text as market_product_command
 
 
 from tgbot.handlers.broadcast_message import handlers as broadcast_handlers
@@ -111,12 +112,20 @@ def setup_dispatcher(dp):
 
 	# onboarding
 	dp.add_handler(CommandHandler("start", onboarding_handlers.command_start))
+	dp.add_handler(CommandHandler("help", onboarding_handlers.command_help))
 
 	# register handler in onboarding
 	dp.add_handler(register_handler)
 
-	# market handler
+	# market handler in market_register
 	dp.add_handler(market_register_handler)
+
+	# product handler in market_product
+	dp.add_handler(MessageHandler(Filters.text & ~Filters.command,
+								market_product_handlers.get_market_info))
+
+
+
 
 	# admin commands
 	# dp.add_handler(CommandHandler("admin", admin_handlers.admin))

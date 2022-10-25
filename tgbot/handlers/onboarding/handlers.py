@@ -130,4 +130,8 @@ def get_passport(update: Update, context: CallbackContext):
 def get_market(update: Update, context: CallbackContext):
 	update.message.reply_text(text=static_text.redirect_market, reply_markup=market_keyboard_list())
 	return ConversationHandler.END
+
+
+def command_help(update: Update, context: CallbackContext):
+	update.message.reply_text(text=static_text.help_text)
 	

@@ -20,15 +20,15 @@ def get_markets() -> ReplyKeyboardMarkup:
 
 
 def market_keyboard_list() -> ReplyKeyboardMarkup:
-    test_data = ["Market 1(fake)", "Market 2(fake)", "Market 3(fake)"]
+    # test_data = ["Market 1(fake)", "Market 2(fake)", "Market 3(fake)"]
     markets = Market.objects.all()
     buttons = []
     
     for market in markets:
             buttons.append([market.name])
 
-    for fake in test_data:
-            buttons.append([fake])
+    # for fake in test_data:
+    #         buttons.append([fake])
 
     buttons.append([add_market])
     return ReplyKeyboardMarkup(buttons, resize_keyboard=True)

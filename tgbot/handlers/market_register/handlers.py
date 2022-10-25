@@ -10,6 +10,7 @@ from telegram.replykeyboardremove import ReplyKeyboardRemove
 from tgbot.handlers.market_register import static_text
 from tgbot.models import Location, User
 from tgbot.handlers.market_register.keyboards import location_keyboard
+from tgbot.handlers.onboarding.keyboards import get_markets
 
 from agency.models import Market
 from django.conf import settings
@@ -137,6 +138,6 @@ def get_market_location(update: Update, context: CallbackContext):
 	market.document.save(document["file_name"], document["lf"])
 	market.photo.save(photo["file_name"], photo["lf"])
 
-	update.message.reply_text(text=text, reply_markup=ReplyKeyboardRemove())
+	update.message.reply_text(text=text, reply_markup=get_markets())
 
 	return ConversationHandler.END
